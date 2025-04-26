@@ -1,0 +1,145 @@
+---
+title: "Global Child Deprivation Report"
+format:
+  html:
+    embed-resources: true
+    code-fold: true
+    theme: cosmo
+---
+
+# Introduction
+
+**Deprivation of children** among us is still one of the most crying issues of humanity at this epoch of the world. Millions of the world’s children still lack access to basic rights such as education, health care, and shelter, despite global economic growth. UNICEF has an important role to play in monitoring and mitigating these inequities.
+
+This briefing takes a closer look at child deprivation worldwide, through the lens of UNICEF’s indicators, and explores in particular how a country's wealth status correlates with the extent of deprivation among its children.
+
+Through four visualizations (a global deprivation map, ranking of countries, economic analyses scatterplot, and country-specific time series) pockets of deprivation, we seek to raise public awareness and emphasize the importance of continued international action.
+
+# Key Findings
+
+- 🌍 **Global Disparities:** The world map clearly shows the disparities at the regional level, with Sub Saharan Africa being the region most affected by child deprivation.
+- 📊 **Top 10 Countries:** Low- and lower-middle-income countries are lead the rankings in child deprivation.
+- 📉 **Economics Analysis:** A scatterplot unveils a definitive negative correlation between GDP per capita and child deprivation rates.
+- 📈 **Tracking the Long-Term Evolution (Kenya):** The share of AIDS-related deaths among female adolescents in Kenya is declining.
+
+# Global Deprivation Map
+
+```{python}
+import pandas as pd
+import geopandas as gpd
+from plotnine import *
+
+indicator_2 = pd.read_csv("unicef_indicator_2.csv")
+metadata = pd.read_csv("unicef_metadata.csv")
+latest_year = indicator_2["time_period"].max()
+
+deprivation = indicator_2[(indicator_2["time_period"] == latest_year) & (indicator_2["sex"] == "Total")]
+
+world = gpd.read_file("ne_110m_admin_0_countries.shp")
+world = world.rename(columns={"ADM0_A3": "alpha_3_code"})
+world_data = world.merge(deprivation, on="alpha_3_code")
+world_data["long"] = world_data.geometry.centroid.x
+world_data["lat"] = world_data.geometry.centroid.y
+
+(
+    ggplot(world_data.dropna(subset=["obs_value"]), aes(x="long", y="lat", fill="obs_value")) +
+    geom_point(size=3, color="black", alpha=0.7) +
+    coord_fixed() +
+    theme_void() +
+    scale_fill_gradient(name="% Deprivation", low="#c6dbef", high="#08306b") +
+    labs(title="Global Child Deprivation Levels", subtitle=f"Data from {latest_year}")
+)
+```
+
+# Top 10 Countries by Child Deprivation
+
+```{python}
+top10 = deprivation.sort_values("obs_value", ascending=False).head(10)
+
+(
+    ggplot(top10, aes(x="reorder(country, obs_value)", y="obs_value")) +
+    geom_col(fill="#2c7fb8") +
+    coord_flip() +
+    labs(
+        title="Top 10 Countries by Child Deprivation",
+        x="Country",
+        y="% of Children with ≥5 Deprivations"
+    ) +
+    theme_minimal(base_size=12) +
+    theme(
+        axis_title=element_text(weight="bold"),
+        plot_title=element_text(size=14, weight="bold")
+    )
+)
+```
+
+# Deprivation vs GDP per Capita
+
+```{python}
+data = deprivation.merge(metadata, on="country")
+data = data.dropna(subset=["obs_value", "GDP per capita (constant 2015 US$)"])
+data = data.rename(columns={"GDP per capita (constant 2015 US$)": "GDP_per_capita"})
+data["Deprivation_percent"] = data["obs_value"] * 100
+
+selected_countries = [
+    "United States", "India", "Nigeria", "Brazil", "Ethiopia",
+    "Bangladesh", "South Africa", "Pakistan", "Mexico", "Indonesia"
+]
+
+data = data[data["country"].isin(selected_countries)]
+data["label"] = data["country"]
+
+(
+    ggplot(data, aes(x="GDP_per_capita", y="Deprivation_percent")) +
+    geom_point(size=4, color="#264653", alpha=0.9) +
+    geom_text(aes(label="label"), nudge_y=1.5, size=8, ha="left", color="#e76f51") +
+    geom_smooth(method="lm", color="#e76f51", size=1.2, se=True, linetype="dashed") +
+    scale_x_log10(labels=lambda l: [f"${int(x):,}" for x in l]) +
+    labs(
+        title="Child Deprivation vs GDP per Capita (10 Key Countries)",
+        subtitle="Deprivation rates generally decline as economic capacity increases",
+        x="GDP per Capita (Log Scale, USD)",
+        y="Child Deprivation Rate (%)"
+    ) +
+    theme_minimal(base_size=13) +
+    theme(
+        plot_title=element_text(weight="bold", size=16),
+        plot_subtitle=element_text(size=12, color="#4d4d4d"),
+        axis_title=element_text(weight="bold"),
+        axis_text_x=element_text(rotation=35, ha="right"),
+        panel_grid_minor=element_blank()
+    )
+)
+```
+
+# AIDS-related Deaths in Kenya (Time-Series)
+
+```{python}
+indicator_1 = pd.read_csv("unicef_indicator_1.csv")
+indicator_1["obs_value"] = indicator_1["obs_value"].replace("<100", "100")
+indicator_1["obs_value"] = pd.to_numeric(indicator_1["obs_value"], errors="coerce")
+indicator_1["time_period"] = pd.to_numeric(indicator_1["time_period"], errors="coerce")
+
+kenya = indicator_1.query(
+    "country == 'Kenya' and sex == 'Female' and current_age == '10 to 19 years old'"
+).dropna(subset=["time_period", "obs_value"])
+
+kenya = kenya.sort_values("time_period")
+
+(
+    ggplot(kenya, aes(x="time_period", y="obs_value")) +
+    geom_line(color="#238b45", size=1.2) +
+    geom_point(color="black", size=2) +
+    scale_x_continuous(breaks=sorted(kenya["time_period"].unique().astype(int))) +
+    labs(
+        title="AIDS-related Deaths Among Female Adolescents in Kenya",
+        x="Year",
+        y="Estimated Deaths"
+    ) +
+    theme_minimal(base_size=12) +
+    theme(
+        axis_title=element_text(weight="bold"),
+        plot_title=element_text(size=14, weight="bold")
+    )
+)
+```
