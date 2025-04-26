@@ -2212,7 +2212,7 @@ vertical-align: -.125em;
 </section>
 <section id="global-deprivation-map" class="level1">
 <h1>Global Deprivation Map</h1>
-<div id="e76d5160" class="cell" data-execution_count="1">
+<div id="d5b9a903" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -2241,9 +2241,9 @@ vertical-align: -.125em;
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/p4/7vfslhms6lzg_92qys684z7c0000gn/T/ipykernel_5998/2291537307.py:14: UserWarning: Geometry is in a geographic CRS. Results from &#39;centroid&#39; are likely incorrect. Use &#39;GeoSeries.to_crs()&#39; to re-project geometries to a projected CRS before this operation.
+<pre><code>/var/folders/p4/7vfslhms6lzg_92qys684z7c0000gn/T/ipykernel_6995/2291537307.py:14: UserWarning: Geometry is in a geographic CRS. Results from &#39;centroid&#39; are likely incorrect. Use &#39;GeoSeries.to_crs()&#39; to re-project geometries to a projected CRS before this operation.
 
-/var/folders/p4/7vfslhms6lzg_92qys684z7c0000gn/T/ipykernel_5998/2291537307.py:15: UserWarning: Geometry is in a geographic CRS. Results from &#39;centroid&#39; are likely incorrect. Use &#39;GeoSeries.to_crs()&#39; to re-project geometries to a projected CRS before this operation.
+/var/folders/p4/7vfslhms6lzg_92qys684z7c0000gn/T/ipykernel_6995/2291537307.py:15: UserWarning: Geometry is in a geographic CRS. Results from &#39;centroid&#39; are likely incorrect. Use &#39;GeoSeries.to_crs()&#39; to re-project geometries to a projected CRS before this operation.
 </code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -2257,7 +2257,7 @@ vertical-align: -.125em;
 </section>
 <section id="top-10-countries-by-child-deprivation" class="level1">
 <h1>Top 10 Countries by Child Deprivation</h1>
-<div id="ba50937d" class="cell" data-execution_count="2">
+<div id="babbddcf" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>top10 <span class="op">=</span> deprivation.sort_values(<span class="st">&quot;obs_value&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)</span>
@@ -2289,7 +2289,7 @@ vertical-align: -.125em;
 </section>
 <section id="deprivation-vs-gdp-per-capita" class="level1">
 <h1>Deprivation vs GDP per Capita</h1>
-<div id="fe340ed0" class="cell" data-execution_count="3">
+<div id="981a99c5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> deprivation.merge(metadata, on<span class="op">=</span><span class="st">&quot;country&quot;</span>)</span>
@@ -2338,7 +2338,7 @@ vertical-align: -.125em;
 </section>
 <section id="aids-related-deaths-in-kenya-time-series" class="level1">
 <h1>AIDS-related Deaths in Kenya (Time-Series)</h1>
-<div id="a66ca48d" class="cell" data-execution_count="4">
+<div id="fbb8e311" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>indicator_1 <span class="op">=</span> pd.read_csv(<span class="st">&quot;unicef_indicator_1.csv&quot;</span>)</span>

@@ -5,6 +5,7 @@ format:
     embed-resources: true
     code-fold: true
     theme: cosmo
+output-file: index.html
 ---
 
 # Introduction
